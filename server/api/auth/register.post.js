@@ -10,7 +10,15 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  if (password.length < 8) {
+    throw createError({
+      statusCode: 400,
+      message: "Password must be at least 8 characters long",
+    });
+  }
+
   const existingUser = await User.findOne({ email });
+
   if (existingUser) {
     throw createError({
       statusCode: 400,

@@ -4,6 +4,13 @@ import jwt from "jsonwebtoken";
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
 
+  if (!email || !password) {
+    throw createError({
+      statusCode: 400,
+      message: "Please enter your email and password",
+    });
+  }
+
   const user = await User.findOne({ email });
 
   if (!user || !(await user.comparePassword(password))) {
@@ -26,8 +33,9 @@ export default defineEventHandler(async (event) => {
 
   return {
     user: {
-      ...user,
-      passord: undefined,
+      id: user._id,
+      email: user.email,
+      username: user.username,
     },
   };
 });

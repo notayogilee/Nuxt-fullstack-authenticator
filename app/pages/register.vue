@@ -1,5 +1,6 @@
 <script setup>
-const { register, login, isLoggedIn } = useAuth();
+import { ref } from "vue";
+const { register, isLoggedIn } = useAuth();
 const router = useRouter();
 
 onMounted(() => {
@@ -18,8 +19,9 @@ const handleRegister = async () => {
     error.value = "";
     await register(email.value, password.value, username.value);
     router.push("/login");
-  } catch (error) {
-    error.value = "Registration failed";
+  } catch (err) {
+    console.error(err);
+    error.value = err.data?.message || "Registration failed";
   }
 };
 </script>
@@ -29,7 +31,9 @@ const handleRegister = async () => {
     <div
       class="bg-white flex flex-col items-center justify-center w-1/2 h-1/2 p-24 shadow-2xl rounded-lg"
     >
-      <h1 class="pb-12 text-2xl">Register</h1>
+      <h1 class="mb-6 text-2xl">Register</h1>
+
+      <h2 class="mb-6 text-red-500">&nbsp;{{ error }}&nbsp;</h2>
       <form class="w-full flex flex-col gap-5" @submit.prevent="handleRegister">
         <input
           v-model="email"
@@ -54,7 +58,7 @@ const handleRegister = async () => {
         >
           Submit
         </button>
-        <p v-if="error" class="text-red-600">{{ error }}</p>
+
         <p class="text-center">
           Already have an account?
           <NuxtLink class="underline" to="/login">Login here!</NuxtLink>
