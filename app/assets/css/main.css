@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .input-field {
+    @apply px-3 py-1 border-gray-300 border rounded-lg transition duration-500 focus:border-cyan-300 outline-none w-full;
+  }
+
+  .btn-primary {
+    @apply rounded-lg p-2 mt-4 mx-auto bg-cyan-500 font-bold text-white text-xl w-full;
+  }
+}

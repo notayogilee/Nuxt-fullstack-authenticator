@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import ErrorAlert from "../components/ErrorAlert.vue";
 
 const { login, isLoggedIn } = useAuth();
 const router = useRouter();
@@ -14,15 +15,18 @@ const email = ref("");
 const password = ref("");
 const error = ref("");
 const hidePassword = ref(true);
+const showError = ref(false);
 
 const handleLogin = async () => {
   try {
     error.value = "";
+    showError.value = false;
     await login(email.value, password.value);
 
     router.push("/");
   } catch (err) {
     console.log(err);
+    showError.value = true;
     error.value = err.data?.message || "Invalid credentials";
   }
 };
@@ -33,21 +37,23 @@ const handleLogin = async () => {
     <div
       class="bg-white flex flex-col items-center justify-center w-1/2 h-1/2 p-24 shadow-2xl rounded-lg"
     >
-      <h1 class="pb-12 text-2xl">Login</h1>
-      <h2 class="mb-6 text-red-500">&nbsp;{{ error }}&nbsp;</h2>
+      <h1 class="pb-6 text-2xl">Login</h1>
+
+      <ErrorAlert :message="error" :show="showError" />
+
       <form class="w-full flex flex-col gap-5" @submit.prevent="handleLogin">
         <input
           v-model="email"
           type="email"
           placeholder="email"
-          class="px-3 py-1 border-gray-300 border rounded-lg"
+          class="input-field"
         />
         <div class="flex gap-3 items-center">
           <input
             v-model="password"
             :type="hidePassword ? 'password' : 'text'"
             placeholder="password"
-            class="px-3 py-1 border-gray-300 border rounded-lg w-full"
+            class="input-field"
           />
           <Icon
             v-if="hidePassword"
@@ -65,11 +71,7 @@ const handleLogin = async () => {
           />
         </div>
 
-        <button
-          class="rounded-lg p-2 mt-4mx-auto bg-red-500 text-bold text-white"
-        >
-          Submit
-        </button>
+        <button class="btn-primary">Login</button>
         <p class="text-center">
           Haven't signed up yet?
           <NuxtLink class="underline" to="/register">Register Here!</NuxtLink>

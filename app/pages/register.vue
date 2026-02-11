@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+
 const { register, isLoggedIn } = useAuth();
 const router = useRouter();
 
@@ -13,15 +14,18 @@ const email = ref("");
 const password = ref("");
 const username = ref("");
 const error = ref("");
+const showError = ref(false);
 
 const handleRegister = async () => {
   try {
     error.value = "";
+    showError.value = false;
     await register(email.value, password.value, username.value);
     router.push("/login");
   } catch (err) {
     console.error(err);
     error.value = err.data?.message || "Registration failed";
+    showError.value = true;
   }
 };
 </script>
@@ -32,32 +36,28 @@ const handleRegister = async () => {
       class="bg-white flex flex-col items-center justify-center w-1/2 h-1/2 p-24 shadow-2xl rounded-lg"
     >
       <h1 class="mb-6 text-2xl">Register</h1>
+      <ErrorAlert :message="error" :show="showError" />
 
-      <h2 class="mb-6 text-red-500">&nbsp;{{ error }}&nbsp;</h2>
       <form class="w-full flex flex-col gap-5" @submit.prevent="handleRegister">
         <input
           v-model="email"
           type="email"
           placeholder="email"
-          class="px-3 py-1 border-gray-300 border rounded-lg"
+          class="input-field"
         />
         <input
           v-model="username"
           type="text"
           placeholder="username"
-          class="px-3 py-1 border-gray-300 border rounded-lg"
+          class="input-field"
         />
         <input
           v-model="password"
           type="password"
           placeholder="password"
-          class="px-3 py-1 border-gray-300 border rounded-lg"
+          class="input-field"
         />
-        <button
-          class="rounded-lg p-2 mt-4mx-auto bg-red-500 text-bold text-white"
-        >
-          Submit
-        </button>
+        <button class="btn-primary">Register</button>
 
         <p class="text-center">
           Already have an account?
