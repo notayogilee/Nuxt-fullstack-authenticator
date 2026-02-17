@@ -7,7 +7,7 @@ const { login, isLoggedIn } = useAuth();
 const router = useRouter();
 
 onMounted(() => {
-  if (isLoggedIn) {
+  if (isLoggedIn.value) {
     router.push("/");
   }
 });

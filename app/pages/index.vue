@@ -1,9 +1,8 @@
 <script setup>
-const { user, isLoggedIn, logout, fetchUser } = useAuth();
+const { user, isLoggedIn, logout } = useAuth();
 const router = useRouter();
 
 onMounted(async () => {
-  // await fetchUser();
   if (!isLoggedIn.value) {
     navigateTo("/login");
   }

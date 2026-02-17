@@ -25,20 +25,13 @@ export default defineEventHandler(async (event) => {
     }
 
     return {
-      user: {
+      data: {
         id: user._id,
         email: user.email,
         name: user.name,
       },
     };
   } catch (error) {
-    // deleteCookie(event, "auth_token", {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "lax",
-    //   path: "/",
-    // });
-
     throw createError({
       statusCode: 401,
       message: "Invalid token",

@@ -1,21 +1,24 @@
 export const useAuth = () => {
   const user = useState("user", () => null);
   const isLoggedIn = computed(() => !!user.value);
+  const initialized = useState("auth-initialized", () => false);
 
   const fetchUser = async () => {
+    if (initialized.value) return;
+
     try {
-      const { user: data } = await $fetch("/api/auth/me", {
+      const { data } = await useFetch("/api/auth/me", {
         credentials: "include",
       });
 
       if (data) {
         user.value = data;
-        return true;
+        initialized.value = true;
       }
     } catch (error) {
       console.error("Error fetching user: ", error);
       user.value = null;
-      return false;
+      initialized.value = false;
     }
   };
 
@@ -27,6 +30,7 @@ export const useAuth = () => {
     });
 
     user.value = data?.user;
+    initialized.value = true;
 
     return data.user;
   };
@@ -42,12 +46,14 @@ export const useAuth = () => {
 
   const logout = async () => {
     user.value = null;
+    initialized.value = false;
     await $fetch("/api/auth/logout", { method: "POST" });
   };
 
   return {
     user,
     isLoggedIn,
+    initialized,
     fetchUser,
     login,
     register,
