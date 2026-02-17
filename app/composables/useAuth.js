@@ -2,6 +2,23 @@ export const useAuth = () => {
   const user = useState("user", () => null);
   const isLoggedIn = computed(() => !!user.value);
 
+  const fetchUser = async () => {
+    try {
+      const { user: data } = await $fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      if (data) {
+        user.value = data;
+        return true;
+      }
+    } catch (error) {
+      console.error("Error fetching user: ", error);
+      user.value = null;
+      return false;
+    }
+  };
+
   const login = async (email, password) => {
     const data = await $fetch("/api/auth/login", {
       method: "POST",
@@ -24,13 +41,14 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    await useRequestFetch("/api/auth/logout", { method: "POST" });
     user.value = null;
+    await $fetch("/api/auth/logout", { method: "POST" });
   };
 
   return {
     user,
     isLoggedIn,
+    fetchUser,
     login,
     register,
     logout,
