@@ -12,7 +12,7 @@ export const useAuth = () => {
       });
 
       if (data) {
-        user.value = data;
+        user.value = data.value.data;
         initialized.value = true;
       }
     } catch (error) {
